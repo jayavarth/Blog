@@ -25,9 +25,13 @@ async function connectToDb(){
 connectToDb()
 
 
-app.post('/add-record',async function(request,response){
+
+
+
+app.post('/add-Record',async function(request,response){
     try{
      await Record.create({
+         "title" : request.body.title,
          "content": request.body.content,
          "date":request.body.date
      })
@@ -45,60 +49,77 @@ app.post('/add-record',async function(request,response){
      })
     }
  })
+ 
+ 
+ app.get('/get-Record',async function(request,response){
+     try{const Records_data=await Record.find()
+         console.log(Records_data)
+         response.status(200).json(Records_data)
+     }catch(error){
+         console.log(error)
+         response.status(500).json({
+             "status":"failure",
+             "message":"could not fetch entries",
+             "error":error
+         })
+     }
+ })
+ 
 
- app.delete('/delete-record/:id',async function(request,response){
-    try{
-    const record_delete= await Record.findById(request.params.id)
-    console.log(record_delete)
-    if(record_delete){
-        await Record.findByIdAndDelete(request.params.id)
-        response.status(200).json({
-            "status":"success",
-            "message":"deleted entry"
-        })
-    }else{
-        response.status(404).json({
-            "status":"failure",
-            "message":"could not find entry"
-        })
-    }
-    }
-    catch{
-        console.log(error)
-        response.status(500).json({
-            "status":"failure",
-            "message":"could not delete entry",
-            "error":error
-        })
-    }
-
-})
-
-app.patch('/edit-record/:id',async function(request,response){
-    try{
-    const edit_id=await Record.findById(request.params.id)
-    if(edit_id){
-        await edit_id.updateOne({
-            "content": request.body.content,
-            "date" :request.body.date
-        })
-        response.status(200).json({
-            "status":"success",
-            "message":"Updated entry"
-        })
-    }else{
-        response.status(404).json({
-            "status":"failure",
-            "message":"could not find entry"
-        })
-    }
-    }
-    catch(error){
-        console.log(error)
-        response.status(500).json({
-            "status":"failure",
-            "message":"could not update entry",
-            "error":error
-        })
-    }
-})
+ app.delete('/delete-Record/:id',async function(request,response){
+     try{
+     const Record_delete= await Record.findById(request.params.id)/
+     console.log(Record_delete)
+     if(Record_delete){
+         await Record.findByIdAndDelete(request.params.id)
+         response.status(200).json({
+             "status":"success",
+             "message":"deleted entry"
+         })
+     }else{
+         response.status(404).json({
+             "status":"failure",
+             "message":"could not find entry"
+         })
+     }
+     }
+     catch{
+         console.log(error)
+         response.status(500).json({
+             "status":"failure",
+             "message":"could not delete entry",
+             "error":error
+         })
+     }
+ 
+ })
+ 
+ app.patch('/edit-Record/:id',async function(request,response){
+     try{
+     const edit_id=await Record.findById(request.params.id)
+     if(edit_id){
+         await edit_id.updateOne({
+             "title": request.body.title,
+             "content": request.body.content,
+             "date" :request.body.date
+         })
+         response.status(200).json({
+             "status":"success",
+             "message":"Updated entry"
+         })
+     }else{
+         response.status(404).json({
+             "status":"failure",
+             "message":"could not find entry"
+         })
+     }
+     }
+     catch(error){
+         console.log(error)
+         response.status(500).json({
+             "status":"failure",
+             "message":"could not update entry",
+             "error":error
+         })
+     }
+ })
